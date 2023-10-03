@@ -332,5 +332,3 @@ def get_sentences_with_keywords(full_text_content, keywords, full_text_response,
 
 
 
-if __name__ == "__main__":
-    app.run(debug=True)
