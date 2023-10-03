@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bioart</title>
+    <!-- Add Bootstrap CSS for styling and responsiveness -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Define a CSS class to highlight the keyword */
+        .highlight {
+            background-color: yellow;
+            font-weight: bold;
+        }
+
+        /* Add some spacing and padding for readability */
+        .container {
+            margin-top: 20px;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        ol {
+            padding-left: 20px;
+        }
+
+        ul.keyword-details {
+            text-align: justify;
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        ul.keyword-details li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-3">Keyword With Sentences</h1>
+        <ol>
+            {% for keyword, data in keyword_counts.items() %}
+                <li>
+                    <strong>{{ keyword }} (Count: {{ data.count }})</strong>
+                    <ul class="keyword-details">
+                        {% for detail in data.details %}
+                            <li>
+                                {% set parts = detail.split(keyword) %}
+                                {{ parts[0] }}<span class="highlight">{{ keyword }}</span>{{ parts[1] }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ol>
+    </div>
+
+    <!-- Add Bootstrap JS for responsiveness (optional) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

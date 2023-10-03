@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>PUBMED ANALYZER</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Add Bootstrap CSS -->
+        <link rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f5f5f5;
+            }
+
+            .container {
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+                margin-top: 30px;
+                background-color: #fff;
+                border-radius: 5px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            }
+
+            h1 {
+                color: #333;
+                text-align: center;
+            }
+
+            form {
+                margin-top: 20px;
+            }
+
+            label {
+                color: #333;
+            }
+
+            input[type="text"] {
+                width: 100%;
+                padding: 10px;
+                margin-bottom: 15px;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+            }
+
+            button[type="submit"],
+            button[type="reset"] {
+                background-color: #007bff;
+                color: #fff;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 3px;
+                cursor: pointer;
+            }
+
+            p {
+                color: #555;
+            }
+
+            strong {
+                font-weight: bold;
+            }
+
+            ul {
+                list-style-type: none;
+                padding: 0;
+            }
+
+            li {
+                margin-bottom: 5px;
+            }
+
+            a.button {
+                display: inline-block;
+                background-color: #007bff;
+                color: #fff;
+                padding: 10px 20px;
+                text-decoration: none;
+                border-radius: 3px;
+                margin-right: 10px;
+            }
+
+            a.button:hover {
+                background-color: #0056b3;
+            }
+
+            /* Add margin to create space */
+            .button-space {
+                margin-right: 20px;
+            }
+
+            /* Add Bootstrap classes for responsiveness */
+            .container {
+                margin-top: 20px;
+            }
+
+            .btn {
+                margin-top: 10px;
+            }
+
+            /* Add loader styles */
+            .loader-container {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(255, 255, 255, 0.7);
+                z-index: 1000;
+            }
+
+            .loader {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                border: 4px solid #f3f3f3;
+                border-top: 4px solid #3498db;
+                border-radius: 50%;
+                width: 50px;
+                height: 50px;
+                animation: spin 2s linear infinite;
+            }
+
+            @keyframes spin {
+                0% {
+                    transform: translate(-50%, -50%) rotate(0deg);
+                }
+                100% {
+                    transform: translate(-50%, -50%) rotate(360deg);
+                }
+            }
+
+            .form-white.input-group > .form-control:focus {
+                border-color: #fff;
+                box-shadow: inset 0 0 0 1px #fff;
+            }
+
+            .navbar-dark .navbar-nav .nav-link {
+                color: #fff;
+            }
+
+            .navbar-dark .navbar-nav .nav-link:hover,
+            .navbar-dark .navbar-nav .nav-link:focus {
+                color: rgba(255, 255, 255, 0.75);
+            }
+
+            /* Custom styles for the "View Full Article Keyword" toggle button and content */
+            .toggle-button {
+                background-color: #007bff;
+                color: #fff;
+                border: none;
+                border-radius: 3px;
+                cursor: pointer;
+            }
+
+            .toggle-button:hover {
+                background-color: #0056b3;
+            }
+
+            .full-article-keywords {
+                display: none;
+                margin-top: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    Bioanalyzer
+                </a>
+                <button class="navbar-toggler" type="button"
+                    data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <!-- Other menu items (if any) on the left side -->
+                    </ul>
+                    <ul class="navbar-nav ml-auto">
+                        <!-- Use ml-auto to move items to the right -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Article Viewer</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Full Text Extractor</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">About</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <h1 class="mt-3">PUBMED ANALYZER</h1>
+            <form method="POST" id="screening-form">
+                <div class="form-group">
+                    <label for="pmids">Enter PMIDs (comma-separated):</label>
+                    <input type="text" class="form-control" name="pmids"
+                        id="pmids" required>
+                </div>
+                <div class="form-group">
+                    <label for="keywords">Keywords (comma-separated):</label>
+                    <input type="text" class="form-control" name="keywords"
+                        id="keywords">
+                </div>
+                <button type="submit" class="btn btn-primary">Search</button>
+                <button type="button" class="btn btn-secondary"
+                    id="reset-button">Reset</button>
+            </form>
+        </div>
+
+        <!-- Loader Container -->
+        <div class="loader-container" id="loader">
+            <div class="loader"></div>
+        </div>
+
+        {% if pmids %}
+        <div class="container mt-4" id="results-container">
+            <h2>Article Details</h2>
+            <ul>
+                {% for pmid in pmids %}
+                <li>
+                     {% if pmcid_results[pmid] and pmcid_results[pmid] != 'PMCID Not Found' %}
+                     <a
+                        href="{{ url_for('view_complete_article', pmcid=pmcid_results[pmid]) }}"
+                        class="btn btn-primary float-right mt-3">PDF</a>
+
+
+                       <a href="{{ url_for('view_full_text', pmid=pmid) }}"
+   class="btn btn-success float-right mt-3 ml-3">Full Text</a>
+
+
+
+                    {% endif %}
+                    <div>
+                        <strong>PMID:</strong> {{ pmid }}
+                    </div>
+                    {% if pmcid_results[pmid] %}
+                    <div>
+                        <strong>PMCID:</strong> {{ pmcid_results[pmid] }}
+                    </div>
+                    {% endif %}
+                    <div>
+                        <strong>Title:</strong> {{ title_results[pmid] }}
+                    </div>
+                    {% if full_text_links[pmid] %}
+                    <div>
+                        <strong>Full Text Link:</strong>
+                        <a href="{{ full_text_links[pmid] }}"
+                            target="_blank">{{ full_text_links[pmid] }}</a>
+                    </div>
+                    {% endif %}
+                    <div>
+                        <strong>Publication Type:</strong>
+                        {{ publication_types[pmid] }}
+                    </div>
+                    {% if exclude_messages[pmid] %}
+                    <p>
+                        <strong>Exclusion Message:</strong>
+                        {{ exclude_messages[pmid] }}
+                    </p>
+                    {% endif %}
+                    {% if keyword_results[pmid] %}
+                    <div>
+                        <strong>Keyword Results:</strong>
+                        <ul>
+                            {% set unique_keywords = [] %}
+                            {% for keyword, sentence in keyword_results[pmid] %}
+                            {% if keyword not in unique_keywords %}
+                            {% set unique_keywords = unique_keywords + [keyword] %}
+                            <li><strong>{{ keyword }}:</strong> {{ sentence }}</li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                </li>
+                <hr>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+
+        <!-- Add Bootstrap JS for responsive features (optional) -->
+        <script
+            src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script
+            src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script>
+        // Function to show the loader
+        function showLoader() {
+            document.getElementById("loader").style.display = "block";
+        }
+
+        // Function to hide the loader
+        function hideLoader() {
+            document.getElementById("loader").style.display = "none";
+        }
+
+        // Attach the showLoader function to the form submission event
+        document.getElementById("screening-form").addEventListener("submit", function () {
+            showLoader();
+        });
+
+          // Function to reset the form and hide the results
+        function resetForm() {
+            document.getElementById("screening-form").reset();
+            document.getElementById("results-container").innerHTML = "";
+        }
+
+        // Attach the showLoader function to the form submission event
+        document.getElementById("screening-form").addEventListener("submit", function () {
+            showLoader();
+        });
+
+        // Attach the resetForm function to the reset button click event
+        document.getElementById("reset-button").addEventListener("click", function () {
+            resetForm();
+        });
+
+        
+    </script>
+    </body>
+</html>
